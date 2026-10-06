@@ -4,7 +4,7 @@ import joblib
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from utils.nnclass import ArcClassificationModel
+from utils.ArcClassificationModel import DNN
 
 # 设置中文字体，解决图中中文/全角符号显示为方框(□)及 Glyph missing 警告
 plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'DejaVu Sans']
