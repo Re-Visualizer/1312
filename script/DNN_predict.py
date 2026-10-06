@@ -30,7 +30,7 @@ feature = scaler.transform(feature).astype(np.float32)
 feature = torch.from_numpy(feature).to(device)
 
 # 5.创建神经网络分类对象，加载训练好的模型和标准化器
-model = ArcClassificationModel(2, 4).to(device)
+model = DNN(2, 4).to(device)
 model.load_state_dict(torch.load('../output/model/arc.pth', map_location=device))
 
 # 6.模型状态(切换为测试状态)

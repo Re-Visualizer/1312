@@ -30,7 +30,7 @@ class DNN(nn.Module):
         return x
 
 # 卷积神经网络 + 残差网络
-class ArcModel(nn.Module):
+class CNN(nn.Module):
     # 1.初始化父类成员，搭建神经网络
     def __init__(self):
         # 1.1初始化父类成员
