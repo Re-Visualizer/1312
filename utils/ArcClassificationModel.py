@@ -1,3 +1,7 @@
+"""
+这里面是硬编写的各类神经网络的参数
+
+"""
 import torch
 import torch.nn as nn
 
@@ -31,37 +35,51 @@ class DNN(nn.Module):
 
 # 卷积神经网络 + 残差网络
 class CNN(nn.Module):
+    """
+    a designed fixed Convolutional Neural Network class for 1D data
+    formula: len = (len + 2*padding - kernel_size) / stride + 1
+    """
     # 1.初始化父类成员，搭建神经网络
     def __init__(self):
         # 1.1初始化父类成员
         super().__init__()
+
         # 1.2搭建神经网络
         # 第1个卷积层，输入2通道，输出16通道，卷积核1*3，步长1，填充0
-        self.conv1 = nn.Conv1d(2,16,3,1,0)
-        # 第1个平均池化层，窗口 1*2，步长2，填充0
-        self.pool1 = nn.AvgPool1d(2,1,0)
+        self.conv1 = nn.Conv1d(2,32,3,1,0)
+        # 第1个最大池化层，窗口 1*2，步长2，填充0
+        self.pool1 = nn.MaxPool1d(2,1,0)
 
-        # 第2个卷积层，输入16通道，输出16通道，卷积核大小1*3，步长1，填充0
-        self.conv2 = nn.Conv1d(16,128,5,1,0)
+        # 第2个卷积层，输入16通道，输出128通道，卷积核大小1*3，步长1，填充0
+        self.conv2 = nn.Conv1d(32,128,3,1,0)
         # 第2个池化层，窗口 1*2，步长1，填充0
-        self.pool2 = nn.AvgPool1d(2,1,0)
+        self.pool2 = nn.MaxPool1d(2,1,0)
 
         # shortcut
-        self.shortcut = nn.Conv1d(2,128,1,5,0)
+        self.shortcut1 = nn.Conv1d(2,128,3,1,0)
+        # 第3个池化层，窗口 1*3，步长1，填充0
+        self.pool3 = nn.MaxPool1d(3,1,0)
 
-        # 第1个隐藏层(全连接层),输入64,输出128
-        self.linear1 = nn.Linear(256,512)
+        # 第1个隐藏层(全连接层),输入768,输出512
+        self.linear1 = nn.Linear(768,512)
+
         # 第2个隐藏层(全连接层),输入128,输出64
         self.linear2 = nn.Linear(512,256)
+
         # 第3个隐藏层(全连接层),输入128,输出64
         self.linear3 = nn.Linear(256,128)
+
+        # shortcut
+        self.shortcut2 = nn.Linear(768,128)
+
         # 第4个隐藏层(全连接层),输入64,输出4
         self.output = nn.Linear(128,4)
 
 
+
     # 2.定义前向传播
     def forward(self, x):
-        residual = self.shortcut(x)
+        residual1 = self.pool3(torch.relu(self.shortcut1(x)))
 
         # 第1层:卷积(加权求和) + 激活函数 --> 池化(降维)
         x = self.pool1(torch.relu(self.conv1(x)))
@@ -70,10 +88,13 @@ class CNN(nn.Module):
         x = self.pool2(torch.relu(self.conv2(x)))
         # 参1：样本行数，参2：特征列数，-1表示自动计算
 
-        # 残差
-        x += residual
+        # 残差1
+        x += residual1
 
-        x = x.reshape(x.size(0),-1)     # n行48列，一行是一个数据
+        # reshape展平特征为一维
+        x = x.reshape(x.size(0),-1)
+
+        residual2 = torch.relu(self.shortcut2(x))
         # 第3层：全连接层(加权求和)+激活函数
         x = torch.relu(self.linear1(x))
 
@@ -82,6 +103,9 @@ class CNN(nn.Module):
 
         # 第5层：全连接层(加权求和)+激活函数
         x = torch.relu(self.linear3(x))
+
+        # 残差2
+        x += residual2
 
         # 第6层：全连接层(加权求和)+激活函数
         x = self.output(x)  # 输出层
