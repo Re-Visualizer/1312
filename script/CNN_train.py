@@ -9,7 +9,7 @@ from utils.dataset import create_CNNdataset
 from utils.ArcClassificationModel import CNN
 
 # configure
-torch.manual_seed(23)                   # 随机种子
+torch.manual_seed(24)                   # 随机种子
 
 # 数据集参数
 CSV_PATH = '../data/CNN4分类.csv'        # 数据集路径
@@ -19,7 +19,7 @@ RANDOM_STATE = 23                       # 随机种子
 
 # Adam优化器参数
 LR = 1e-3                               # 学习率
-BETAS = (0.99, 0.99)                    # 动量因子
+BETAS = (0.95, 0.999)                    # 动量因子
 WEIGHT_DECAY = 1e-4                    # 权重衰减
 
 # 训练参数

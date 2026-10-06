@@ -60,19 +60,19 @@ class CNN(nn.Module):
         # 第3个池化层
         self.pool3 = nn.MaxPool1d(4,1,0)
 
-        # 第1个隐藏层(全连接层),
-        self.linear1 = nn.Linear(512,512)
+        # 第1个隐藏层(全连接层)
+        self.linear1 = nn.Linear(512,384)
 
-        # 第2个隐藏层(全连接层),输入128,输出64
-        self.linear2 = nn.Linear(512,256)
+        # 第2个隐藏层(全连接层)
+        self.linear2 = nn.Linear(384,256)
 
-        # 第3个隐藏层(全连接层),输入128,输出64
+        # 第3个隐藏层(全连接层)
         self.linear3 = nn.Linear(256,128)
 
         # shortcut
         self.shortcut2 = nn.Linear(512,128)
 
-        # 第4个隐藏层(全连接层),输入64,输出4
+        # 第4个隐藏层(全连接层)
         self.output = nn.Linear(128,4)
 
 
