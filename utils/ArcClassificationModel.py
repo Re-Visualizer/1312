@@ -45,23 +45,23 @@ class CNN(nn.Module):
         super().__init__()
 
         # 1.2搭建神经网络
-        # 第1个卷积层，输入2通道，输出16通道，卷积核1*3，步长1，填充0
+        # 第1个卷积层，输入通道，输出通道，卷积核，步长，填充
         self.conv1 = nn.Conv1d(2,32,3,1,0)
-        # 第1个最大池化层，窗口 1*2，步长2，填充0
+        # 第1个最大池化层，窗口，步长，填充
         self.pool1 = nn.MaxPool1d(2,1,0)
 
-        # 第2个卷积层，输入16通道，输出128通道，卷积核大小1*3，步长1，填充0
+        # 第2个卷积层
         self.conv2 = nn.Conv1d(32,128,3,1,0)
-        # 第2个池化层，窗口 1*2，步长1，填充0
+        # 第2个池化层
         self.pool2 = nn.MaxPool1d(2,1,0)
 
         # shortcut
-        self.shortcut1 = nn.Conv1d(2,128,3,1,0)
-        # 第3个池化层，窗口 1*3，步长1，填充0
-        self.pool3 = nn.MaxPool1d(3,1,0)
+        self.shortcut1 = nn.Conv1d(2,128,4,1,0)
+        # 第3个池化层
+        self.pool3 = nn.MaxPool1d(4,1,0)
 
-        # 第1个隐藏层(全连接层),输入768,输出512
-        self.linear1 = nn.Linear(768,512)
+        # 第1个隐藏层(全连接层),
+        self.linear1 = nn.Linear(512,512)
 
         # 第2个隐藏层(全连接层),输入128,输出64
         self.linear2 = nn.Linear(512,256)
@@ -70,7 +70,7 @@ class CNN(nn.Module):
         self.linear3 = nn.Linear(256,128)
 
         # shortcut
-        self.shortcut2 = nn.Linear(768,128)
+        self.shortcut2 = nn.Linear(512,128)
 
         # 第4个隐藏层(全连接层),输入64,输出4
         self.output = nn.Linear(128,4)
@@ -89,7 +89,7 @@ class CNN(nn.Module):
         # 参1：样本行数，参2：特征列数，-1表示自动计算
 
         # 残差1
-        x += residual1
+        x = x + residual1
 
         # reshape展平特征为一维
         x = x.reshape(x.size(0),-1)
@@ -105,7 +105,7 @@ class CNN(nn.Module):
         x = torch.relu(self.linear3(x))
 
         # 残差2
-        x += residual2
+        x = x + residual2
 
         # 第6层：全连接层(加权求和)+激活函数
         x = self.output(x)  # 输出层

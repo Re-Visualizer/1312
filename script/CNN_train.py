@@ -27,8 +27,8 @@ EPOCHS = 150                            # 训练轮数
 BATCH_SIZE = 32                         # 每批次样本数
 
 # 模型保存
-model_path = '../output/model/arc_model.pth'
-scaler_path = '../output/model/arc_scaler.pkl'
+model_path = '../output/script/model/arc_model.pth'
+scaler_path = '../output/script/model/arc_scaler.pkl'
 
 # 统一定义训练设备：有GPU用GPU，否则用CPU
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
