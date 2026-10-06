@@ -28,8 +28,8 @@ import torch.nn as nn                       #封装了神经网络的各种操�
 import torch.optim as optim                 #优化器
 from torchsummary import summary
 from torch.utils.data import DataLoader     #数据加载器
-from utils.dataset import create_dataset
-from utils.nnclass import ArcClassificationModel
+from utils.dataset import create_DNNdataset
+from utils.ArcClassificationModel import DNN
 
 torch.manual_seed(24)
 
@@ -40,13 +40,13 @@ print(f'当前使用的训练设备：{device}')
 # todo 1.构建数据集
 # 流程：数据-->张量-->数据集dataset-->数据加载器DataLoader
 # 参1：数据集路径；参2：测试集划分；参3：随即种子；参4：是否打乱顺序
-train_dataset, test_dataset, input_dim, output_dim, scaler = create_dataset('../data/4分类电弧.csv', test_size=0.2, random_state=23,stratify=True)
+train_dataset, test_dataset, input_dim, output_dim, scaler = create_DNNdataset('../data/4分类电弧.csv', test_size=0.2, random_state=23,stratify=True)
 # 参1：数据集对象，参2：每批次的大小，参3：是否打乱数据
 train_loader = DataLoader(train_dataset, batch_size=96,shuffle=True)
 
 # todo 2.搭建神经网络
 # 1.使用神经网络模型类ArcClassificationModel，创建对象model
-model = ArcClassificationModel(input_dim, output_dim).to(device)
+model = DNN(input_dim, output_dim).to(device)
     # 计算模型参数，打印神经网络的结构总览
     # 参1：模型对象，参2：输入数据的形状（批次大小，输入特征），每批96条，每条2列特征
 summary(model, input_size=(96, input_dim), device=str(device))
@@ -94,7 +94,7 @@ joblib.dump(scaler, "../output/model/arc_scaler.pkl")
 # todo 4.模型测试
 class_names = ['停机', '正常', '标准故障', '复合故障']
 # 1.创建神经网络分类对象
-model = ArcClassificationModel(input_dim, output_dim).to(device)
+model = DNN(input_dim, output_dim).to(device)
 # 2.加载模型参数
 model.load_state_dict(torch.load('../output/model/arc.pth'))
 model.eval()    # 切换模型状态 -->测试模式

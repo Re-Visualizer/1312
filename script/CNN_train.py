@@ -4,9 +4,9 @@ import joblib
 import numpy as np
 import torch.nn as nn
 import torch.optim as optim
-from src.nnclass import ArcModel
-from src.dataset import create_dataset
 from torch.utils.data import DataLoader
+from utils.dataset import create_CNNdataset
+from utils.ArcClassificationModel import CNN
 
 # configure
 torch.manual_seed(23)                   # 随机种子
@@ -35,13 +35,13 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f'当前使用的训练设备：{device}')
 
 # todo 1.构建数据集
-train_dataset, test_dataset, output_dim, scaler= create_dataset(CSV_PATH, TSET_SIZE, RANDOM_STATE)
+train_dataset, test_dataset, output_dim, scaler= create_CNNdataset(CSV_PATH, TSET_SIZE, RANDOM_STATE)
 # 1.创建数据加载器
 dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE,shuffle=True)
 
 # todo 2.搭建神经网络
 # 1.使用神经网络ArcModel,创建对象model
-model = ArcModel().to(device)
+model = CNN().to(device)
 # 2.定义损失函数，因为是多分类，这里用的是：多分类交叉熵损失函数
 criterion = nn.CrossEntropyLoss()
 # 3.创建优化器对象
@@ -86,7 +86,7 @@ joblib.dump(scaler, scaler_path)
 
 # todo 5.模型测试
 # 1.创建神经网络分类对象
-model = ArcModel().to(device)
+model = CNN().to(device)
 # 2.加载模型参数
 model.load_state_dict(torch.load(model_path))
 model.eval()    # 切换模型状态 -->测试模式
