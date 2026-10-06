@@ -14,17 +14,17 @@ torch.manual_seed(23)                   # 随机种子
 # 数据集参数
 CSV_PATH = '../data/CNN4分类.csv'        # 数据集路径
 class_names = ['停机', '正常', '标准故障', '复合故障']
-TSET_SIZE = 0.3                         # 测试集占比
+TSET_SIZE = 0.2                         # 测试集占比
 RANDOM_STATE = 23                       # 随机种子
 
 # Adam优化器参数
 LR = 1e-3                               # 学习率
-BETAS = (0.9, 0.999)                    # 动量因子
+BETAS = (0.99, 0.99)                    # 动量因子
 WEIGHT_DECAY = 1e-4                    # 权重衰减
 
 # 训练参数
-EPOCHS = 150                            # 训练轮数
-BATCH_SIZE = 32                         # 每批次样本数
+EPOCHS = 100                            # 训练轮数
+BATCH_SIZE = 16                         # 每批次样本数
 
 # 模型保存
 model_path = '../output/script/model/arc_model.pth'
@@ -43,7 +43,7 @@ dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE,shuffle=True)
 # 1.使用神经网络ArcModel,创建对象model
 model = CNN().to(device)
 # 2.定义损失函数，因为是多分类，这里用的是：多分类交叉熵损失函数
-weights = torch.tensor([2.5, 1.0, 1.2, 1.5], dtype=torch.float32).to(device)
+weights = torch.tensor([2.5, 1.0, 1.2, 2], dtype=torch.float32).to(device)
 criterion = nn.CrossEntropyLoss(weight=weights)
 
 # 3.创建优化器对象
