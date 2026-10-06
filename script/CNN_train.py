@@ -43,7 +43,9 @@ dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE,shuffle=True)
 # 1.使用神经网络ArcModel,创建对象model
 model = CNN().to(device)
 # 2.定义损失函数，因为是多分类，这里用的是：多分类交叉熵损失函数
-criterion = nn.CrossEntropyLoss()
+weights = torch.tensor([2.5, 1.0, 1.2, 1.5], dtype=torch.float32).to(device)
+criterion = nn.CrossEntropyLoss(weight=weights)
+
 # 3.创建优化器对象
 optimizer = optim.AdamW(model.parameters(),lr=LR,betas=BETAS,weight_decay=WEIGHT_DECAY)
 
